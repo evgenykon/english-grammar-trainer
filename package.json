@@ -13,6 +13,7 @@
     "@gridsome/transformer-remark": "^0.6.4",
     "@gridsome/vue-remark": "^0.2.6",
     "buefy": "^0.9.21",
+    "gh-pages": "^4.0.0",
     "gridsome": "^0.7.0"
   }
 }
