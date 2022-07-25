@@ -13,13 +13,13 @@
       <div class="columns">
         <div class="column buttons">
             <b-button rounded type="is-primary" @click="randomizeTest">Get random words</b-button>
-            <b-button rounded type="is-primary" outlined>Reset</b-button>
-            <div class="block"><label class="checkbox"><input type="checkbox"> Show hints</label></div>
+            <!-- b-button rounded type="is-primary" outlined>Reset</b-button -->
+            <!-- div class="block"><label class="checkbox"><input type="checkbox"> Show hints</label></div -->
         </div>
         <div class="column buttons">
-            <b-button type="is-primary" outlined>Verbs</b-button>
+            <!-- b-button type="is-primary" outlined>Verbs</b-button>
             <b-button type="is-primary" outlined>Pronouns</b-button>
-            <b-button type="is-primary" outlined>Additions</b-button>
+            <b-button type="is-primary" outlined>Additions</b-button -->
         </div>
       </div>
 
@@ -193,14 +193,19 @@ export default {
     randomizeTest() {
       this.test.model = null;
       Vue.nextTick(() => {
+        const list = this.$page.verbs.edges.map(item => item.node);
+        const randomVerb = list[Math.floor(Math.random()*list.length)];
+
+        const pronouns = (new Pronoun).getAll();
+        const randomPronoun = pronouns[Math.floor(Math.random()*pronouns.length)];
+
         this.test.model = new Test(
-          new Verb('hide', 'hid', 'hidden', 'hides', 'hiding', 'where'),
-          new Pronoun('she')
+          new Verb(
+            randomVerb.verbs[0], randomVerb.verbs[1], randomVerb.verbs[2], randomVerb.verbs[3], randomVerb.verbs[4], randomVerb.wword
+          ),
+          new Pronoun(randomPronoun)
         );
       });
-    },
-    onReset() {
-
     },
     onSubmit(data) {
       for(let isError of data) {
@@ -214,3 +219,18 @@ export default {
   }
 }
 </script>
+
+
+<page-query>
+query {
+  verbs: allDocs(filter: {type: {eq: "verbs"}}) {
+    edges {
+      node {
+        id
+        verbs
+        wword
+      }
+    }
+  }
+}
+</page-query>

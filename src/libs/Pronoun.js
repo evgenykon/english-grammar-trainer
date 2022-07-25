@@ -6,6 +6,10 @@ export default class Pronoun {
         this.word = word;
     }
 
+    getAll() {
+        return ['I', 'we', 'you', 'they', 'he', 'she', 'it'];
+    }
+
     getWord() {
         return this.word;
     }
