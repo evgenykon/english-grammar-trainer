@@ -23,21 +23,33 @@
         </div>
       </div>
 
-      <b-notification v-model="test.isGenerated"  class="content" v-if="test.model">
-        <h5>Generated words</h5>
-        <table class="table is-bordered is-fullwidth">
-          <tbody>
-          <tr>
-              <th width="5%">Verb</th>
-              <td>to hide</td>
-          </tr>
-          <tr>
-              <th>Pronoun</th>
-              <td>she</td>
-          </tr>
-          </tbody>
-        </table>
-      </b-notification>
+      <nav class="level" v-if="this.test.model">
+        
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Pronoun</p>
+            <p class="title">{{this.test.model.pronoun.getWord()}}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Verb</p>
+            <p class="title">{{this.test.model.verb.getV1()}}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Correct</p>
+            <p class="title has-text-success">{{this.test.successCount}}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Errors</p>
+            <p class="title has-text-danger">{{this.test.errorsCount}}</p>
+          </div>
+        </div>
+      </nav>
 
       <table class="table is-bordered is-fullwidth">
 
@@ -55,38 +67,42 @@
             <th rowspan="3">Present</th>
             <th>+</th>
             <td>
-              <input-verb :tense="Tenses.PR_SIMPLE_POS" :test="test.model" v-if="test.model" ></input-verb>
+              <input-verb :tense="Tenses.PR_SIMPLE_POS" :test="test.model" v-if="test.model" v-on:submit="onSubmit" ></input-verb>
             </td>
             <td>
-              <input-verb :tense="Tenses.PR_CONT_POS" :test="test.model" v-if="test.model"  ></input-verb>
+              <input-verb :tense="Tenses.PR_CONT_POS" :test="test.model" v-if="test.model"  v-on:submit="onSubmit" ></input-verb>
             </td>
             <td>
-              
+              <input-verb :tense="Tenses.PR_PERF_POS" :test="test.model" v-if="test.model" v-on:submit="onSubmit" ></input-verb>
             </td>
         </tr>
         <tr>
             <!-- present -->
             <th>-</th>
             <td>
-              <input-verb :tense="Tenses.PR_SIMPLE_NEG" :test="test.model" v-if="test.model" ></input-verb>
+              <input-verb :tense="Tenses.PR_SIMPLE_NEG" :test="test.model" v-if="test.model" v-on:submit="onSubmit" ></input-verb>
             </td>
             <td>
-      
+              <input-verb :tense="Tenses.PR_CONT_NEG" :test="test.model" v-if="test.model" v-on:submit="onSubmit"  ></input-verb>
             </td>
             <td>
-
+              <input-verb :tense="Tenses.PR_PERF_NEG" :test="test.model" v-if="test.model" v-on:submit="onSubmit"  ></input-verb>
             </td>
         </tr>
         <tr>
             <!-- present -->
             <th>?</th>
             <td>
-              <input-verb :tense="Tenses.PR_SIMPLE_Q" :test="test.model" v-if="test.model"  ></input-verb>
+              <input-verb :tense="Tenses.PR_SIMPLE_Q" :test="test.model" v-if="test.model" v-on:submit="onSubmit"  ></input-verb>
             </td>
-            <td></td>
-            <td></td>
+            <td>
+              <input-verb :tense="Tenses.PR_CONT_Q" :test="test.model" v-if="test.model" v-on:submit="onSubmit"  ></input-verb>
+            </td>
+            <td>
+              <input-verb :tense="Tenses.PR_PERF_Q" :test="test.model" v-if="test.model" v-on:submit="onSubmit"  ></input-verb>
+            </td>
         </tr>
-        <tr>
+        <!-- tr>
             <th rowspan="3">Past</th>
             <th>+</th>
             <td></td>
@@ -94,14 +110,12 @@
             <td></td>
         </tr>
         <tr>
-            <!-- past -->
             <th>-</th>
             <td></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <!-- past -->
             <th>?</th>
             <td></td>
             <td></td>
@@ -115,19 +129,17 @@
             <td></td>
         </tr>
         <tr>
-            <!-- future -->
             <th>-</th>
             <td></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <!-- future -->
             <th>?</th>
             <td></td>
             <td></td>
             <td></td>
-        </tr>
+        </tr -->
         </tbody>
 
       </table>
@@ -141,6 +153,7 @@
 
 
 <script>
+import Vue from "vue";
 
 import BaseHeader from '../components/BaseHeader.vue'
 import BaseTabs from '../components/BaseTabs.vue'
@@ -169,17 +182,34 @@ export default {
       },
       test: {
         isGenerated: true,
-        model: null
+        model: null,
+        errorsCount: 0,
+        successCount: 0
       },
       Tenses
     }
   },
   methods: {
     randomizeTest() {
-      this.test.model = new Test(
-        new Verb(),
-        new Pronoun()
-      );
+      this.test.model = null;
+      Vue.nextTick(() => {
+        this.test.model = new Test(
+          new Verb('hide', 'hid', 'hidden', 'hides', 'hiding', 'where'),
+          new Pronoun('she')
+        );
+      });
+    },
+    onReset() {
+
+    },
+    onSubmit(data) {
+      for(let isError of data) {
+        if (isError) {
+          this.test.errorsCount++;
+        } else {
+          this.test.successCount++;
+        }
+      }
     }
   }
 }

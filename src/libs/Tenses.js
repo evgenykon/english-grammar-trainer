@@ -8,16 +8,15 @@ export default {
     PR_CONT_NEG: 'prc-',
     PR_CONT_Q: 'prc?',
 
-    /*PR_PERF = 'prp';
-    PR_PERF_CONT = 'prpc';*/
+    PR_PERF_POS: 'prp+',
+    PR_PERF_NEG: 'prp-',
+    PR_PERF_Q: 'prp?',
 
-    /*static PAST_SIMPLE = 'pts';
-    static PAST_CONT = 'ptc';
-    static PAST_PERF = 'ptp';
-    static PAST_PERF_CONT = 'ptpc';
+    CASE_POS: '+',
+    CASE_NEG: '-',
+    CASE_Q: '?',
 
-    static FUT_SIMPLE = 'fts';
-    static FUT_CONT = 'ftc';
-    static FUT_PERF = 'ftp';
-    static FUT_PERF_CONT = 'ftpc';*/
+    TENSE_PR_SIMPLE: 'prs',
+    TENSE_PR_CONT: 'prc',
+    TENSE_PR_PERF: 'prp',
 }

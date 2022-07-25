@@ -2,10 +2,21 @@
 <div class="container">
     <div class="block mb-1">{{getTenseParameters.getHint()}}</div>
     <div class="linear-inputs">
-        <input class="input is-small" v-model="fields.f1"  />
-        <input class="input is-small" v-model="fields.f2" />
-        <input class="input is-small" v-model="fields.f3" />
-        <span class="tag" v-if="getTenseParameters.isShowQuestion()">?</span>
+        <span class="tag" v-if="getTenseParameters.isShowQuestion()">
+            {{getTenseParameters.getWWord()}}
+        </span>
+        <input 
+            v-for="(field,i) in this.fields" 
+            :class="`input is-small ml-1 mb-1 ${getClassStyle} ${(errors.length > 0 ? (errors[i] ? 'is-danger' : 'is-success') : '')}`" 
+            :key="i" 
+            v-bind:disabled="disabled"
+            v-on:keyup.enter="onSubmit" v-model="fields[i]" 
+        />
+
+        <span class="tag" v-if="getTenseParameters.getAddition()">
+            {{getTenseParameters.getAddition()}}
+        </span>
+
     </div>
     
 </div>
@@ -13,8 +24,6 @@
 
 <script>
 import Test from '../../libs/Test';
-import Verb from '../../libs/Verb';
-import Pronoun from '../../libs/Pronoun';
 export default {
     name: 'InputVerb',
     props: {
@@ -29,11 +38,21 @@ export default {
     },
     data() {
         return {
-            fields: {
-                f1: '',
-                f2: '',
-                f3: ''
-            }
+            fields: [],
+            errors: [],
+            disabled: false
+        }
+    },
+    mounted() {
+        for (let i=0;i<this.getTenseParameters.getInputCount();i++) {
+            this.fields.push('');
+        }
+    },
+    methods: {
+        onSubmit() {
+            this.errors = this.test.submit(this.tense, this.fields);
+            this.$emit('submit', this.errors);
+            this.disabled = true;
         }
     },
     computed: {
@@ -42,6 +61,10 @@ export default {
          */
         getTenseParameters() {
             return this.test.getTenseParameters(this.tense);
+        },
+
+        getClassStyle() {
+            return  '';
         }
     }
 }
@@ -49,7 +72,7 @@ export default {
 
 <style>
 .linear-inputs input {
-    width: 33%;
+    width: 30%;
     display: inline-block;
 }
 
